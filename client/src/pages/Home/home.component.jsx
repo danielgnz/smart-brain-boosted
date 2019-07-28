@@ -31,7 +31,7 @@ const useStyles = makeStyles({
     },
   });
 
-export const Home = ({ currentUser, faceRecognitionStart, source }) => {
+export const Home = ({ currentUser, faceRecognitionStart, source, score }) => {
     const classes = useStyles()
 
     const handleClick = (event) => {
@@ -39,7 +39,7 @@ export const Home = ({ currentUser, faceRecognitionStart, source }) => {
 
         const imageUrl = document.getElementById('imageUrl').value
         
-        faceRecognitionStart(imageUrl)
+        faceRecognitionStart(imageUrl, currentUser)
     }
 
     return (
@@ -51,11 +51,15 @@ export const Home = ({ currentUser, faceRecognitionStart, source }) => {
                     Welcome back, {currentUser.user_name}!
                 </Typography>
                 <Typography align='center' variant='h5' gutterBottom>
+                   You have detected <span style={{fontWeight: 'bold'}}>{ currentUser.score } </span> people so far
+                </Typography>
+                <Typography align='center' variant='h5' gutterBottom>
                     Your current score is...
                 </Typography>
                 <Typography align='center' variant='h4' gutterBottom>
-                    {currentUser.score}
+                    { score }
                 </Typography>
+                
                 <Typography variant='body1' className={classes.text} gutterBottom >
                     Copy and paste an image URL in the input box below and see what happens!
                 </Typography>
@@ -94,13 +98,14 @@ export const Home = ({ currentUser, faceRecognitionStart, source }) => {
     )
 }
 
-const mapStateToProps = ({ userReducer: { currentUser }, imageReducer: { source } }) => ({
+const mapStateToProps = ({ userReducer: { currentUser, peopleDetected }, imageReducer: { source, score } }) => ({
     currentUser,
     source,
+    score,
 })
 
 const mapDispatchToProps = dispatch => ({
-    faceRecognitionStart: (url) => dispatch(faceRecognitionStart(url))
+    faceRecognitionStart: (imageUrl, currentUser) => dispatch(faceRecognitionStart({ imageUrl, currentUser }))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home)

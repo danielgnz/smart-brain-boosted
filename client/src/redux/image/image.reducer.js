@@ -3,7 +3,8 @@ import ImageActionTypes from './image.types'
 const INITIAL_STATE = {
     source: '',
     boundingBoxes: [],
-    size: null
+    size: null,
+    score: 0
 }
 
 const imageReducer = (state = INITIAL_STATE, action) => {
@@ -16,7 +17,8 @@ const imageReducer = (state = INITIAL_STATE, action) => {
         case ImageActionTypes.FACE_RECOGNITION_SUCCESS:
             return {
                 ...state,
-                boundingBoxes: action.payload
+                boundingBoxes: action.payload,
+                score: action.payload.length
             }
         case ImageActionTypes.FACE_RECOGNITION_FAILURE:
             return {
@@ -30,6 +32,10 @@ const imageReducer = (state = INITIAL_STATE, action) => {
                     width: action.payload.width,
                     height: action.payload.height
                 }
+            }
+        case ImageActionTypes.RESET_IMAGE_STATE:
+            return {
+                ...INITIAL_STATE
             }
         default:
             return state

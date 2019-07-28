@@ -7,7 +7,9 @@ import {
     signUpSuccess,
     signUpFailure,
     loginSuccess,
-    loginFailure
+    loginFailure,
+    updatePeopleDetectedSuccess,
+    updatePeopleDetectedFailure
 } from './user.actions'
 
 
@@ -51,6 +53,27 @@ export function* login({ payload: { email, password }}) {
         )
     }
 }
+
+export function* updatePeopleDetected({ payload: { peopleDetected, currentUser } }) {
+    try {
+        const res = yield axios.post('/updateScore', {
+            peopleDetected,
+            currentUser
+        })
+
+        const updatedUser = res.data
+
+        yield put (
+            updatePeopleDetectedSuccess(updatedUser)
+        )
+
+    } catch(error) {
+        yield put (
+            updatePeopleDetectedFailure(error)
+        )
+    }
+}
+
 export function* onSignUpStart() {
     yield takeLatest(
         UserActionTypes.SIGN_UP_START,
@@ -65,9 +88,17 @@ export function* onLoginStart() {
     )
 }
 
+export function* onUpdatePeopleDetectedStart() {
+    yield takeLatest(
+        UserActionTypes.UPDATE_PEOPLE_DETECTED_START,
+        updatePeopleDetected
+    )
+}
+
 export function* userSagas() {
     yield all([
         call(onSignUpStart),
-        call(onLoginStart)
+        call(onLoginStart),
+        call(onUpdatePeopleDetectedStart)
     ])
 }

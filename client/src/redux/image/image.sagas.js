@@ -9,16 +9,21 @@ import {
     calculateImageSize
 } from './image.actions'
 
-export function* faceRecognition({ payload }) {
+import { 
+    updatePeopleDetectedStart
+} from '../user/user.actions'
+
+export function* faceRecognition({ payload: { imageUrl, currentUser } }) {
     try {
         const resp = yield axios.post('http://localhost:5000/clarifai', {
-            imageUrl: payload,
+            imageUrl
         })
 
         const boundingBoxes = resp.data.outputs[0].data.regions.map(regions => regions.region_info)
         
-        yield put(updateImageSource(payload))
+        yield put(updateImageSource(imageUrl))
         yield put(faceRecognitionSuccess(boundingBoxes))
+        yield put(updatePeopleDetectedStart({ peopleDetected: boundingBoxes.length, currentUser }))
 
     } catch (error) {
         yield put(
@@ -29,7 +34,7 @@ export function* faceRecognition({ payload }) {
 }
 
 export function* imageSize() {
-    yield delay(500)
+    yield delay(100)
     const image = document.getElementById('targetImage')
     yield put(calculateImageSize(image))
 }

@@ -15,6 +15,28 @@ const handleApiCall = () => (req, res) => {
 	.catch(error => res.status(400).send(error))
 }
 
+const updateScore = (db) => (req, res) => {
+    const { peopleDetected, currentUser: { email } } = req.body
+
+    db('users')
+    .where({ email })
+    .select('score')
+    .then(user => {
+        const newScore = Number(user[0].score) + Number(peopleDetected)
+        
+        db('users')
+        .where({ email })
+        .update({
+            score: newScore
+        })
+        .returning('*')
+        .then(updatedUser => res.status(200).send(updatedUser[0]))
+        .catch(error => res.status(400).send(error))
+    })
+    .catch(error => res.status(400).send(error))
+}
+
 module.exports = { 
-    handleApiCall
+    handleApiCall,
+    updateScore
 }

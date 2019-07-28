@@ -14,8 +14,7 @@ export const App = ({ currentUser }) => {
       <Switch>
         <Route 
           exact path='/'
-          // render = {() => currentUser ? <Home /> : <Redirect to='/login' />} 
-          component={Home}
+          render = {() => currentUser ? <Home /> : <Redirect to='/login' />} 
         />
         <Route 
           path='/login'
