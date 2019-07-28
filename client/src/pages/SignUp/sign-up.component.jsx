@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom'
+
+import { connect } from 'react-redux'
 
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -12,6 +14,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 
+import { signUpStart } from '../../redux/user/user.actions'
 
 const useStyles = makeStyles(theme => ({
   '@global': {
@@ -38,8 +41,35 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function SignUp() {
+const SignUp = ({ signUpStart }) => {
   const classes = useStyles();
+  const [credentials, setCredentials] = useState({
+    userName: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+  })
+
+  const handleChange = (event) => {
+    const { name, value } = event.target
+
+    setCredentials({
+      ...credentials,
+      [name]: value
+    })
+  }
+
+  const handleSubmit = (event) => {
+    event.preventDefault()
+    const { userName, email, password, confirmPassword } = credentials
+    
+    if(password !== confirmPassword) {
+      alert(`Passwords don't match. Please try again!`)
+    }
+    else {
+      signUpStart(userName, email, password)
+    }
+  }
 
   return (
     <Container component="main" maxWidth="xs">
@@ -51,11 +81,10 @@ export default function SignUp() {
         <Typography component="h1" variant="h5">
           Sign Up
         </Typography>
-        <form className={classes.form} noValidate>
+        <form className={classes.form} onSubmit={handleSubmit}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
-                autoComplete="fname"
                 name="userName"
                 variant="outlined"
                 required
@@ -63,6 +92,7 @@ export default function SignUp() {
                 id="userName"
                 label="User Name"
                 autoFocus
+                onChange={handleChange}
               />
             </Grid>
             <Grid item xs={12}>
@@ -73,7 +103,7 @@ export default function SignUp() {
                 id="email"
                 label="Email Address"
                 name="email"
-                autoComplete="email"
+                onChange={handleChange}
               />
             </Grid>
             <Grid item xs={12}>
@@ -85,7 +115,19 @@ export default function SignUp() {
                 label="Password"
                 type="password"
                 id="password"
-                autoComplete="current-password"
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                required
+                fullWidth
+                name="confirmPassword"
+                label="Confirm Password"
+                type="password"
+                id="confirmPassword"
+                onChange={handleChange}
               />
             </Grid>
           </Grid>
@@ -110,3 +152,9 @@ export default function SignUp() {
     </Container>
   );
 }
+
+const mapDispatchToProps = dispatch => ({
+  signUpStart: (userName, email, password) => dispatch(signUpStart({ userName, email, password }))
+})
+ 
+export default connect(null, mapDispatchToProps)(SignUp)

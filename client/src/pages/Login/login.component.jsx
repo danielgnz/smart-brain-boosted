@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link as RouterLink} from 'react-router-dom';
+
+import { connect } from 'react-redux';
 
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -13,6 +15,8 @@ import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
+
+import { loginStart } from '../../redux/user/user.actions'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -43,8 +47,28 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function Login() {
+const Login = ({ loginStart }) => {
   const classes = useStyles();
+  const [credentials, setCredentials] = useState({
+    email: '',
+    password: '',
+  })
+
+  const handleChange = (event) => {
+    const { name, value } = event.target
+
+    setCredentials({
+      ...credentials,
+      [name]: value
+    })
+  }
+
+  const handleSubmit = (event) => {
+    event.preventDefault()
+    const { email, password } = credentials
+
+    loginStart(email, password)
+  }
 
   return (
     <Grid container component="login" className={classes.root}>
@@ -58,7 +82,7 @@ export default function Login() {
           <Typography component="h1" variant="h5">
             Login
           </Typography>
-          <form className={classes.form} noValidate>
+          <form className={classes.form} onSubmit={handleSubmit}>
             <TextField
               variant="outlined"
               margin="normal"
@@ -69,6 +93,7 @@ export default function Login() {
               name="email"
               autoComplete="email"
               autoFocus
+              onChange={handleChange}
             />
             <TextField
               variant="outlined"
@@ -80,6 +105,7 @@ export default function Login() {
               type="password"
               id="password"
               autoComplete="current-password"
+              onChange={handleChange}
             />
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
@@ -112,3 +138,9 @@ export default function Login() {
     </Grid>
   );
 }
+
+const mapDispatchToProps = dispatch => ({
+  loginStart: (email, password) => dispatch(loginStart({ email, password }))
+})
+
+export default connect(null, mapDispatchToProps)(Login)
