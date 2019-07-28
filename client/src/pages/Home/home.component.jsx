@@ -31,7 +31,7 @@ const useStyles = makeStyles({
     },
   });
 
-export const Home = ({ currentUser, faceRecognitionStart }) => {
+export const Home = ({ currentUser, faceRecognitionStart, source }) => {
     const classes = useStyles()
 
     const handleClick = (event) => {
@@ -61,7 +61,7 @@ export const Home = ({ currentUser, faceRecognitionStart }) => {
                 </Typography>
                 <div className={classes.inputContainer}>
                     <Grid container spacing={2}>
-                        <Grid item xs={12} sm={8} md={9} lg={10}>
+                        <Grid item xs={12} sm={10} >
                         <TextField
                             autoComplete="fname"
                             name="imageUrl"
@@ -73,7 +73,7 @@ export const Home = ({ currentUser, faceRecognitionStart }) => {
                             autoFocus
                         />
                         </Grid>
-                        <Grid item xs={12} sm={4} md={3} lg={2}>
+                        <Grid item xs={12} sm={2}>
                             <Button
                             fullWidth
                             variant="contained"
@@ -87,15 +87,16 @@ export const Home = ({ currentUser, faceRecognitionStart }) => {
                     </Grid>
                 </div>
 
-                <ImageCard imageSrc="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80" />
+                <ImageCard imageSrc={source} />
                 
             </Container>
         </div>
     )
 }
 
-const mapStateToProps = ({ userReducer: { currentUser } }) => ({
-    currentUser
+const mapStateToProps = ({ userReducer: { currentUser }, imageReducer: { source } }) => ({
+    currentUser,
+    source,
 })
 
 const mapDispatchToProps = dispatch => ({

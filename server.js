@@ -8,6 +8,7 @@ const bcrypt = require('bcrypt')
 const signup = require('./controllers/signup')
 const login = require('./controllers/login')
 const profile = require('./controllers/profile')
+const image = require('./controllers/image')
 
 if(process.env.NODE_ENV !== 'production') require('dotenv').config()
 
@@ -30,5 +31,5 @@ if(process.env.NODE_ENV === 'production') {
 app.post('/signup', signup.handleSignUp(db, bcrypt))
 app.post('/login', login.handleLogin(db, bcrypt))
 app.get('/profile/:id', profile.handleProfile(db))
-
+app.post('/clarifai', image.handleApiCall())
 app.listen(PORT, () => console.log(`app listening on port ${PORT}`))

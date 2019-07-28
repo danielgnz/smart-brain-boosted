@@ -1,9 +1,9 @@
 import styled from "styled-components"
 
-import Paper from '@material-ui/core/Paper';
-
-export const Card = styled(Paper)`
-
+export const Wrapper = styled.div`
+    display: flex;
+    justify-content: center;
+    position: relative;
 `
 
 export const Image = styled.img`
